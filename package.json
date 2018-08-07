@@ -1,0 +1,29 @@
+{
+  "name": "store.price.tracker",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "16.4.1",
+    "react-native": "0.56.0",
+    "react-native-action-button": "^2.7.2",
+    "react-native-firebase": "^4.3.8",
+    "react-native-paper": "^2.0.0-alpha.7",
+    "react-native-remote-svg": "^1.2.0",
+    "react-native-svg-image": "^2.0.1",
+    "react-native-vector-icons": "^4.6.0",
+    "react-navigation": "^2.9.3"
+  },
+  "devDependencies": {
+    "babel-jest": "23.4.2",
+    "babel-preset-react-native": "^5",
+    "jest": "23.4.2",
+    "react-test-renderer": "16.4.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
