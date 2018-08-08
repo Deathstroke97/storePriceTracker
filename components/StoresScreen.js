@@ -25,7 +25,7 @@ export default class StoresScreen extends React.Component {
   };
 
   componentDidMount() {
-    fetch('http://192.168.88.19:3000/api/db/stores')
+    fetch('http://store-price-tracker.herokuapp.com/api/db/stores')
       .then(res => res.json())
       .then(json => {
         this.setState({ stores: json })

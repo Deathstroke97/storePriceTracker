@@ -51,70 +51,70 @@ export default class AddNewOddScreen extends React.Component {
 
   alertForEmptyLink = () => {
     Alert.alert("", "Вы не ввели ссылку", [
-     // { text: "Нет", onPress: () => console.log("отмена") },
+      // { text: "Нет", onPress: () => console.log("отмена") },
       {
         text: "Ok",
         onPress: () => {
-          
-            //this.props.navigation.goBack() &&
-            console.log("successfull");
+
+          //this.props.navigation.goBack() &&
+          console.log("successfull");
         }
       }
     ]);
-  }  
+  }
 
   checkGood = async () => {
-    if(this.state.link == "") {
+    if (this.state.link == "") {
       this.alertForEmptyLink()
     }
     else {
       console.log('touched');
-    const ID = await AsyncStorage.getItem("userID")
-    console.log('myid', ID)
-    console.log('link', this.state.link)
-    console.log('storeID', this.state.INFO.id)
+      const ID = await AsyncStorage.getItem("userID")
+      console.log('myid', ID)
+      console.log('link', this.state.link)
+      console.log('storeID', this.state.INFO.id)
 
-    let details = {
-      link: this.state.link,
-      storeId: this.state.INFO.id,
-    }
+      let details = {
+        link: this.state.link,
+        storeId: this.state.INFO.id,
+      }
 
-    let formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
+      let formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
 
-    fetch('http://192.168.88.19:3000/api/parser', {   
-      
-      //'https://store-price-tracker.herokuapp.com/api/parser'
+      fetch('https://store-price-tracker.herokuapp.com/api/parser', {
 
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      },
-      body: formBody
-    }
-    ).then((response) => response.json())
+        //'https://store-price-tracker.herokuapp.com/api/parser'
 
-      .then((resJson) => {
-        console.log("resJson", resJson)
-        //console.log(resJson.data.currentPrice, resJson.data.imageURL, resJson.data.title)
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: formBody
+      }
+      ).then((response) => response.json())
+
+        .then((resJson) => {
+          console.log("resJson", resJson)
+          //console.log(resJson.data.currentPrice, resJson.data.imageURL, resJson.data.title)
 
 
-        let newGood = {
-          curPrice: resJson.data.currentPrice,
-          imgURL: resJson.data.imageURL,
-          goodTitle: resJson.data.title,
-        }
-        this.setState(prevState => ({
-          good: newGood,
-        }))
+          let newGood = {
+            curPrice: resJson.data.currentPrice,
+            imgURL: resJson.data.imageURL,
+            goodTitle: resJson.data.title,
+          }
+          this.setState(prevState => ({
+            good: newGood,
+          }))
 
-      }).catch(error => console.log('error while sending good to server'))
-    this.setModalVisible(true);
+        }).catch(error => console.log('error while sending good to server'))
+      this.setModalVisible(true);
 
     }
   }
@@ -127,7 +127,7 @@ export default class AddNewOddScreen extends React.Component {
 
   handleTrue = async () => {
     const ID = await AsyncStorage.getItem("userID");
-    const userToken =  await AsyncStorage.getItem("userToken");
+    const userToken = await AsyncStorage.getItem("userToken");
 
     let details = {
       token: userToken,
@@ -149,15 +149,15 @@ export default class AddNewOddScreen extends React.Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    
-    fetch('http://192.168.88.19:3000/api/tracker', { //tracker
+
+    fetch('http://store-price-tracker.herokuapp.com/api/tracker', { //tracker
       method: "POST",
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       },
       body: formBody
     }).then(response => console.log(response))
-    .catch(e => console.log('error while sending good to server'));
+      .catch(e => console.log('error while sending good to server'));
 
 
     this.props.navigation.navigate("Home");
@@ -324,6 +324,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
     width: width * 0.8,
-    height: height * 0.8
+    height: height * 0.65
   }
 });

@@ -11,9 +11,11 @@ import {
 } from "react-native";
 import { AsyncStorage, Alert } from "react-native";
 import firebase from "react-native-firebase";
-import {Card,
+import {
+  Card,
   Title,
-  Paragraph} from 'react-native-paper';
+  Paragraph
+} from 'react-native-paper';
 
 const { width } = Dimensions.get("window");
 const db = firebase.database();
@@ -37,7 +39,7 @@ const stores = [
     originalPrice: "12 000 tg",
     currentPrice: '10 000 tg',
   },
-  { imageURL: "https://image.ibb.co/i4eHtH/ww.png", id: 1,title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg',  },
+  { imageURL: "https://image.ibb.co/i4eHtH/ww.png", id: 1, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
   {
     imageURL:
       "https://yt3.ggpht.com/a-/ACSszfFZuuqkGPSjOiHwDrLNvM53iJm5TK54CrA7gg=s900-mo-c-c0xffffffff-rj-k-no",
@@ -45,7 +47,7 @@ const stores = [
     title: 'dkafdkaf afdafdfa',
     currentPrice: '10 000 tg',
   },
-  { imageURL: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6, title: 'dkafdkaf afdafdfa',currentPrice: '10 000 tg', },
+  { imageURL: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
   {
     imageURL:
       "https://image.isu.pub/150210012900-10151cf6131f67d8bf0c77df2803a909/jpg/page_1_thumb_large.jpg",
@@ -89,7 +91,7 @@ export default class HomeScreen extends React.Component {
 
   deleteGood = async (id) => {
     const USERID = await AsyncStorage.getItem("userID");
-    let newGoods = this.state.goods.filter(other => {
+    let newGoods = this.state.trackers.filter(other => {
       return other.id != id;
     });
     console.log("deletedID:", id);
@@ -97,7 +99,7 @@ export default class HomeScreen extends React.Component {
 
     db.ref(`TRACKERS/${USERID}/${id}`).set(null);
 
-    this.setState({ goods: newGoods });
+    this.setState({ trackers: newGoods });
 
 
   };
@@ -111,7 +113,7 @@ export default class HomeScreen extends React.Component {
         const userID = await AsyncStorage.getItem("userID");
 
         if (!userID) {
-          const res = await fetch('http://192.168.88.19:3000/api/db/register')   //"https://store-price-tracker.herokuapp.com/api/db/register"
+          const res = await fetch('https://store-price-tracker.herokuapp.com/api/db/register')
           const result = await res.json();
 
           const token = await firebase.messaging().getToken()
@@ -120,7 +122,7 @@ export default class HomeScreen extends React.Component {
           await AsyncStorage.setItem("userToken", token);
 
           // this.retrieveData()
-        } 
+        }
       } else {
         // ask for permission again
         await firebase.messaging().requestPermission();
@@ -141,15 +143,17 @@ export default class HomeScreen extends React.Component {
         await this.requestNotificationPermission()
       }
       else {
-        
+
         this.state.trackersRef = db.ref(`TRACKERS/${ID}`).on('value', snapshot => {
-          
+
           var trackers = [];
 
           snapshot.forEach(dataSnapshot => {
-            trackers.push(dataSnapshot.val())
+            var item = dataSnapshot.val()
+            item.id = dataSnapshot.key;
+            trackers.push(item)
           })
-          
+
           console.log(trackers)
           this.setState({
             trackers: trackers,
@@ -169,6 +173,7 @@ export default class HomeScreen extends React.Component {
       {
         text: "Да",
         onPress: () => {
+          console.log('deleting', item)
           this.deleteGood(item.id) &&
             this.props.navigation.goBack() &&
             console.log("successfull");
@@ -177,7 +182,7 @@ export default class HomeScreen extends React.Component {
     ]);
   }
 
-  beginListeningForMessages(){
+  beginListeningForMessages() {
     console.log('begin listening for notifications')
     notifs.onNotification(notif => {
       console.log(notif)
@@ -190,7 +195,7 @@ export default class HomeScreen extends React.Component {
     this.retrieveData();
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.state.trackersRef()
   }
 
@@ -199,59 +204,66 @@ export default class HomeScreen extends React.Component {
     if (this.state.isLoading) {
       return <ActivityIndicator size="large" color="#0000ff" />;
     }
-
+    console.log('mytrackers', this.state.trackers);
     return (
+
       <View style={styles.container}>
+
         {this.state.trackers.length === 0 ? (
-          <View style = {{flex : 1}}>
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
               <Text>Добавьте товар в список</Text>
-          </View>
-          <View style = {{flex: 1}}></View>
+            </View>
+            <View style={{ flex: 1 }}></View>
           </View>
         ) : (
-            
-              <FlatList
-                contentContainerStyle={{ margin: 4 }}
-                horizontal={false}
-                numColumns={2}
-                data={this.state.trackers}
-                renderItem={({ item }) => {
-                  return (
+
+            <FlatList
+              contentContainerStyle={{ margin: 4 }}
+              horizontal={false}
+              numColumns={2}
+              data={this.state.trackers}
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("GoodScreen", {
+                    good: item,
+                    delete: this.deleteGood
+                  })}>
                     <View style={styles.oddView}>
-                    <Image
-                      style={{ width: 321, height: 200, margin: 4 }}
-                      source={{ uri: item.imageURL }}
-                    />
-                    <Text>
-                      Товар:<Text style={{ fontWeight: "bold" }}>
-                        {item.title}
+                      <Image
+                        style={{ width: width / 2, height: 200, margin: 4 }}
+                        source={{ uri: item.imageURL }}
+                      />
+                      <Text>
+                        Товар:<Text style={{ fontWeight: "bold" }}>
+                          {item.title}
+                        </Text>
                       </Text>
-                    </Text>
-                    <Text style={{ paddingBottom: 50 }}>Цена: {item.currentPrice} тенге</Text>
-                    <TouchableOpacity
-                      style={styles.buttonDelete}
-                      onPress={() => this.alert(item)}
-                    >
-                      <Text>Удалить</Text>
-                    </TouchableOpacity>
-                  </View>
-                  );
-                }}
-                keyExtractor={(item, index) => item.id}
-              />
-            )}
-        <TouchableOpacity style={ styles.touch } onPress={() => this.props.navigation.navigate('Stores')}>
+                      <Text style={{ paddingBottom: 50 }}>Цена: {item.currentPrice} тенге</Text>
+                      <TouchableOpacity
+                        style={styles.buttonDelete}
+                        onPress={() => this.alert(item)}
+                      >
+                        <Text>Удалить</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+              keyExtractor={(item, index) => item.id}
+            />
+          )}
+        <TouchableOpacity style={styles.touch} onPress={() => this.props.navigation.navigate('Stores')}>
           <Image style={styles.myAddBtn} source={require('./img/myplus.png')} />
-        </TouchableOpacity> 
-                
+        </TouchableOpacity>
+
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  touch :{
+  touch: {
     position: "absolute",
     bottom: 16,
     right: 16,
