@@ -11,37 +11,50 @@ import {
 } from "react-native";
 import { AsyncStorage, Alert } from "react-native";
 import firebase from "react-native-firebase";
-import { Notification } from 'react-native-firebase';
+import {Card,
+  Title,
+  Paragraph} from 'react-native-paper';
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const db = firebase.database();
-const messaging = firebase.messaging();
+const notifs = firebase.notifications();
 
 
 const stores = [
   {
-    url:
+    imageURL:
       "https://i.pinimg.com/originals/4b/3e/cc/4b3ecc09e3b4fb647b0e8ff66b6312dd.jpg",
-    id: 41
+    id: 41,
+    title: 'dkafdkaf afdafdfa kxjnckjdxc sdkfjsdkj',
+    originalPrice: "12 000 tg",
+    currentPrice: '10 000 tg',
   },
   {
-    url:
+    imageURL:
       "https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/092016/untitled-1_17.jpg?itok=PMxwI3X0",
-    id: 26
+    id: 26,
+    title: 'dkafdkaf afdafdfa',
+    originalPrice: "12 000 tg",
+    currentPrice: '10 000 tg',
   },
-  { url: "https://image.ibb.co/i4eHtH/ww.png", id: 1 },
+  { imageURL: "https://image.ibb.co/i4eHtH/ww.png", id: 1,title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg',  },
   {
-    url:
+    imageURL:
       "https://yt3.ggpht.com/a-/ACSszfFZuuqkGPSjOiHwDrLNvM53iJm5TK54CrA7gg=s900-mo-c-c0xffffffff-rj-k-no",
-    id: 7
+    id: 7,
+    title: 'dkafdkaf afdafdfa',
+    currentPrice: '10 000 tg',
   },
-  { url: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6 },
+  { imageURL: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6, title: 'dkafdkaf afdafdfa',currentPrice: '10 000 tg', },
   {
-    url:
+    imageURL:
       "https://image.isu.pub/150210012900-10151cf6131f67d8bf0c77df2803a909/jpg/page_1_thumb_large.jpg",
-    id: 4
+    id: 4,
+    title: 'dkafdkaf afdafdfa',
+    originalPrice: "12 000 tg",
+    currentPrice: '10 000 tg',
   }
-];
+]
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -57,52 +70,7 @@ export default class HomeScreen extends React.Component {
 
   state = {
     isLoading: true,
-    trackers: [],
-    trackersRef: null,
-    goods: [
-      {
-        imageURL:
-          "https://a.lmcdn.ru/pi/img236x341/R/A/RA084AMAISF6_6203977_1_v2.jpg",
-        title: "Кроссовки Wicked One",
-        currentPrice: "14 500 тг",
-        id: 4
-      },
-      {
-        imageURL:
-          "https://a.lmcdn.ru/pi/img389x562/D/I/DI028AMPQX33_4487223_1_v2.jpg",
-        title: "Кроссовки Wicked One",
-        currentPrice: "21 500 тг",
-        id: 5
-      },
-      {
-        imageURL:
-          "https://lanita.ru/images/offer/5820/2/su789emvcd22/su789emvcd22.jpg",
-        title: "Мужская Одежда SuperDRY 2018",
-        currentPrice: "44 500 тг",
-        id: 6
-      },
-      {
-        imageURL:
-          "https://a.lmcdn.ru/pi/img236x341/J/H/JH001EMAYSW0_6987647_1_v1.jpg",
-        title: "Футболкa s.Oliver",
-        currentPrice: "9 500 тг",
-        id: 7
-      },
-      {
-        imageURL:
-          "https://a.lmcdn.ru/pi/img236x341/S/O/SO917EMBWNW7_6951739_1_v1.jpg",
-        title: "Футболкa s.Oliver",
-        currentPrice: "10 500 тг",
-        id: 8
-      },
-      {
-        imageURL:
-          "https://a.lmcdn.ru/pi/img236x341/W/I/WI015EMWOB33_5188808_1_v3.jpg",
-        title: "Футболкa s.Oliver",
-        currentPrice: "24 100 тг",
-        id: 9
-      }
-    ],
+    trackers: []
   };
 
 
@@ -136,39 +104,39 @@ export default class HomeScreen extends React.Component {
 
 
   requestNotificationPermission = async () => {
-    console.log('here');
     try {
       const enabled = await firebase.messaging().hasPermission();
 
       if (enabled) {
-        const token = await firebase.messaging().getToken();
-        ;
-        if (!token) {
+        const userID = await AsyncStorage.getItem("userID");
+
+        if (!userID) {
           const res = await fetch('http://192.168.88.19:3000/api/db/register')   //"https://store-price-tracker.herokuapp.com/api/db/register"
           const result = await res.json();
+
+          const token = await firebase.messaging().getToken()
+
           await AsyncStorage.setItem("userID", result);
           await AsyncStorage.setItem("userToken", token);
-        }
-      }
-      else {
+
+          // this.retrieveData()
+        } 
+      } else {
         // ask for permission again
         await firebase.messaging().requestPermission();
+        // this.requestNotificationPermission()
       }
-
-      return Promise.resolve();
-
     } catch (e) {
-      return Promise.reject();
     }
   };
 
 
   retrieveData = async () => {
     try {
-      console.log('s')
 
       const ID = await AsyncStorage.getItem("userID");
-      console.log('ID', ID)
+      const token = await firebase.messaging().getToken()
+      console.log(ID, token)
       if (!ID) {
         await this.requestNotificationPermission()
       }
@@ -207,15 +175,14 @@ export default class HomeScreen extends React.Component {
         }
       }
     ]);
-  };
+  }
 
   beginListeningForMessages(){
-
-    console.log("begin listening for messages")
-
-    firebase.notifications().onNotification(notif => {
+    console.log('begin listening for notifications')
+    notifs.onNotification(notif => {
       console.log(notif)
     })
+
   }
 
   componentDidMount() {
@@ -235,82 +202,80 @@ export default class HomeScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        {this.state.trackers.length !== 0 ? (
-          <View style={{ flex: 1 }}>
-            <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
+        {this.state.trackers.length === 0 ? (
+          <View style = {{flex : 1}}>
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
               <Text>Добавьте товар в список</Text>
-            </View>
-            
           </View>
-          
-          
+          <View style = {{flex: 1}}></View>
+          </View>
         ) : (
             
               <FlatList
                 contentContainerStyle={{ margin: 4 }}
                 horizontal={false}
                 numColumns={2}
-                data={this.state.goods}
-                horizontal={false}
+                data={this.state.trackers}
                 renderItem={({ item }) => {
                   return (
                     <View style={styles.oddView}>
-                      <Image
-                        style={{ width: 150, height: 150, margin: 4 }}
-                        source={{ uri: item.imageURL }}
-                      />
-                      <Text>
-                        Товар:<Text style={{ fontWeight: "bold" }}>
-                          {item.title}
-                        </Text>
+                    <Image
+                      style={{ width: 321, height: 200, margin: 4 }}
+                      source={{ uri: item.imageURL }}
+                    />
+                    <Text>
+                      Товар:<Text style={{ fontWeight: "bold" }}>
+                        {item.title}
                       </Text>
-                      <Text style={{ paddingBottom: 50 }}>Цена: {item.currentPrice}</Text>
-                      <TouchableOpacity
-                        style={styles.buttonDelete}
-                        onPress={() => this.alert(item)}
-                      >
-                        <Text>Удалить</Text>
-                      </TouchableOpacity>
-                    </View>
+                    </Text>
+                    <Text style={{ paddingBottom: 50 }}>Цена: {item.currentPrice} тенге</Text>
+                    <TouchableOpacity
+                      style={styles.buttonDelete}
+                      onPress={() => this.alert(item)}
+                    >
+                      <Text>Удалить</Text>
+                    </TouchableOpacity>
+                  </View>
                   );
                 }}
-                keyExtractor={(item, index) => {
-                  item.id;
-                }}
+                keyExtractor={(item, index) => item.id}
               />
-              <TouchableOpacity style={{ flex: 1 }} onPress={() => this.props.navigation.navigate('Stores')}>
-                <Image style={styles.myAddBtn} source={require('./img/myplus.png')} />
-              </TouchableOpacity>
-            
-            
-          )}
-            
-              
-           
+            )}
+        <TouchableOpacity style={ styles.touch } onPress={() => this.props.navigation.navigate('Stores')}>
+          <Image style={styles.myAddBtn} source={require('./img/myplus.png')} />
+        </TouchableOpacity> 
+                
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  touch :{
+    position: "absolute",
+    bottom: 16,
+    right: 16,
+  },
   goodContainer: {
     flex: 8,
   },
   myAddBtn: {
+    backgroundColor: "white",
     width: 70,
     height: 70,
-    position: "absolute",
-    bottom: 16,
-    right: 16,
+    borderRadius: 50,
+    // position: "absolute",
+    // bottom: 16,
+    // right: 16,
   },
   container: {
     flex: 1
   },
   oddView: {
-    backgroundColor: "pink",
+    //backgroundColor: "pink",
     width: width / 2,
     borderColor: "green",
-    borderBottomColor: "green",
+    //borderBottomColor: "green",
     borderWidth: 2
   },
 

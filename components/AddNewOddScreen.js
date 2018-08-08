@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   Dimensions,
   AsyncStorage,
+  Alert,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 //import { green100 } from "react-native-paper/src/styles/colors";
@@ -47,8 +48,27 @@ export default class AddNewOddScreen extends React.Component {
     INFO: this.props.navigation.state.params.info,
   };
 
+
+  alertForEmptyLink = () => {
+    Alert.alert("", "Вы не ввели ссылку", [
+     // { text: "Нет", onPress: () => console.log("отмена") },
+      {
+        text: "Ok",
+        onPress: () => {
+          
+            //this.props.navigation.goBack() &&
+            console.log("successfull");
+        }
+      }
+    ]);
+  }  
+
   checkGood = async () => {
-    console.log('touched');
+    if(this.state.link == "") {
+      this.alertForEmptyLink()
+    }
+    else {
+      console.log('touched');
     const ID = await AsyncStorage.getItem("userID")
     console.log('myid', ID)
     console.log('link', this.state.link)
@@ -95,6 +115,8 @@ export default class AddNewOddScreen extends React.Component {
 
       }).catch(error => console.log('error while sending good to server'))
     this.setModalVisible(true);
+
+    }
   }
 
 
