@@ -6,43 +6,56 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  View
-} from "react-native";
+  
+  } from "react-native";
 
-export default class StoresScreen extends React.Component {
+export default class GoodScreen extends React.Component {
 
   renderPrices = (good) => {
-    if (good.originalPrice == null) {
+    if (good.originalPrice == undefined) {
       return (
-        <View>
-          <Text>Цена: </Text><Text style={{}}>{originalPrice} тенге</Text>
+        <View style = {{flexDirection: 'row'}}>
+          <Text>Цена: </Text><Text style={{}}>{good.currentPrice} тенге</Text>
         </View>
       )
     }
     else {
       return (
         <View>
-          <Text>Цена: </Text><Text style={styles.originalPrice}>{originalPrice} тенге</Text>
-          <Text>Цена со скидкой: </Text><Text styles={styles.currentPrice}>{currentPrice} тенге</Text>
+        <View style = {{ flexDirection:'row'}}>
+          <Text>Цена: </Text><Text style={styles.originalPrice}>{good.originalPrice} тенге</Text>
+        </View>
+        <View style = {{ flexDirection:'row'}}>
+        <Text>Цена со скидкой: </Text><Text style={styles.currentPrice}>{good.currentPrice} тенге</Text>
+        </View>
         </View>
       )
     }
   }
 
   render() {
-    const { item } = this.props.navigation.getParam('item');
-    const imageURL = item.imageURL;
-    const title = item.title;
-    const currentPrice = item.currentPrice;
-    const originalPrice = item.originalPrice;
-
+    console.log('here nav: ', this.props.navigation)
+    const  item = this.props.navigation.getParam('good');
+    const deletefunction = (id) => this.props.navigation.getParam('delete')(id)
+    console.log('deletefunction',this.props.navigation.getParam('delete'))
+    console.log('myitem', item.originalPrice)
+    
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <Image source={{ uri: imageURL }}></Image>
+          <Image source={{ uri: item.imageURL }}  style={{ width: 165, height: 200, margin: 4 }} ></Image>
         </View>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", flexDirection: 'row' }}>
           {this.renderPrices(item)}
+        </View>
+        <View style = {{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <TouchableOpacity
+            onPress={()=> deletefunction(item.id)}
+            style={styles.button}
+          >
+            <Text>Удалить</Text>
+          </TouchableOpacity>  
+          
         </View>
       </View>
     )
@@ -62,5 +75,12 @@ const styles = StyleSheet.create({
   },
   currentPrice: {
     color: 'green',
-  }
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: "red",
+    padding: 10,
+    width: 200,
+
+  },
 });

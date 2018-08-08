@@ -7,6 +7,7 @@ import firebase from "react-native-firebase";
 import HomeScreen from "./components/HomeScreen";
 import StoresScreen from "./components/StoresScreen";
 import AddNewOddScreen from "./components/AddNewOddScreen";
+import GoodScreen from "./components/GoodScreen";
 
 export default class App extends React.Component {
   render() {
@@ -18,7 +19,8 @@ const RootStack = createStackNavigator(
   {
     Home: HomeScreen,
     Stores: StoresScreen,
-    AddNewOdd: AddNewOddScreen
+    AddNewOdd: AddNewOddScreen,
+    Good: GoodScreen,
   },
   {
     initialRouteName: "Home"

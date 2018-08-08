@@ -37,7 +37,7 @@ const stores = [
     id: 26,
     title: 'dkafdkaf afdafdfa',
     originalPrice: "12 000 tg",
-    currentPrice: '10 000 tg',
+    currentPrice: '10 006 tg',
   },
   { imageURL: "https://image.ibb.co/i4eHtH/ww.png", id: 1, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
   {
@@ -45,7 +45,7 @@ const stores = [
       "https://yt3.ggpht.com/a-/ACSszfFZuuqkGPSjOiHwDrLNvM53iJm5TK54CrA7gg=s900-mo-c-c0xffffffff-rj-k-no",
     id: 7,
     title: 'dkafdkaf afdafdfa',
-    currentPrice: '10 000 tg',
+    currentPrice: '10 002 tg',
   },
   { imageURL: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
   {
@@ -53,8 +53,8 @@ const stores = [
       "https://image.isu.pub/150210012900-10151cf6131f67d8bf0c77df2803a909/jpg/page_1_thumb_large.jpg",
     id: 4,
     title: 'dkafdkaf afdafdfa',
-    originalPrice: "12 000 tg",
-    currentPrice: '10 000 tg',
+    originalPrice: "12 004 tg",
+    currentPrice: '10 003 tg',
   }
 ]
 
@@ -102,7 +102,23 @@ export default class HomeScreen extends React.Component {
     this.setState({ trackers: newGoods });
 
 
+  }
+
+  deleteGood2 = async (id) => {
+    const USERID = await AsyncStorage.getItem("userID");
+    let newGoods = stores.filter(other => {
+      return other.id != id;
+    });
+    console.log("deletedID:", id);
+    console.log("newGoods", newGoods);
+
+    db.ref(`TRACKERS/${USERID}/${id}`).set(null);
+
+    this.setState({ stores: newGoods });
+
+
   };
+
 
 
   requestNotificationPermission = async () => {
@@ -209,7 +225,7 @@ export default class HomeScreen extends React.Component {
 
       <View style={styles.container}>
 
-        {this.state.trackers.length === 0 ? (
+        {this.state.trackers.length !== 0 ? (
           <View style={{ flex: 1 }}>
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
               <Text>Добавьте товар в список</Text>
@@ -222,12 +238,13 @@ export default class HomeScreen extends React.Component {
               contentContainerStyle={{ margin: 4 }}
               horizontal={false}
               numColumns={2}
-              data={this.state.trackers}
+              data={stores}
               renderItem={({ item }) => {
                 return (
-                  <TouchableOpacity onPress={() => this.props.navigation.navigate("GoodScreen", {
+                  <TouchableOpacity onPress={() => this.props.navigation.navigate("Good", {
+                    id:item.id,
                     good: item,
-                    delete: this.deleteGood
+                    delete: (id) => this.deleteGood2(id)
                   })}>
                     <View style={styles.oddView}>
                       <Image
