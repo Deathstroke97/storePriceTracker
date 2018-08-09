@@ -9,7 +9,14 @@ import {
   
   } from "react-native";
 
+const { params} = this.props.navigation.state;
 export default class GoodScreen extends React.Component {
+
+  handlePress = (item) => {
+    params.alert(item)
+    params.delete(item.id)
+    this.props.navigation.goBack();
+  }  
 
   renderPrices = (good) => {
     if (good.originalPrice == undefined) {
@@ -34,6 +41,7 @@ export default class GoodScreen extends React.Component {
   }
 
   render() {
+    
     console.log('here nav: ', this.props.navigation)
     const  item = this.props.navigation.getParam('good');
     const deletefunction = (id) => this.props.navigation.getParam('delete')(id)
@@ -50,7 +58,9 @@ export default class GoodScreen extends React.Component {
         </View>
         <View style = {{flex: 1, justifyContent: "center", alignItems: "center"}}>
         <TouchableOpacity
-            onPress={()=> deletefunction(item.id)}
+            onPress={()=> {
+              this.handlePress(item)
+            }}
             style={styles.button}
           >
             <Text>Удалить</Text>

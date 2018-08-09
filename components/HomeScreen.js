@@ -22,41 +22,7 @@ const db = firebase.database();
 const notifs = firebase.notifications();
 
 
-const stores = [
-  {
-    imageURL:
-      "https://i.pinimg.com/originals/4b/3e/cc/4b3ecc09e3b4fb647b0e8ff66b6312dd.jpg",
-    id: 41,
-    title: 'dkafdkaf afdafdfa kxjnckjdxc sdkfjsdkj',
-    originalPrice: "12 000 tg",
-    currentPrice: '10 000 tg',
-  },
-  {
-    imageURL:
-      "https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/092016/untitled-1_17.jpg?itok=PMxwI3X0",
-    id: 26,
-    title: 'dkafdkaf afdafdfa',
-    originalPrice: "12 000 tg",
-    currentPrice: '10 006 tg',
-  },
-  { imageURL: "https://image.ibb.co/i4eHtH/ww.png", id: 1, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
-  {
-    imageURL:
-      "https://yt3.ggpht.com/a-/ACSszfFZuuqkGPSjOiHwDrLNvM53iJm5TK54CrA7gg=s900-mo-c-c0xffffffff-rj-k-no",
-    id: 7,
-    title: 'dkafdkaf afdafdfa',
-    currentPrice: '10 002 tg',
-  },
-  { imageURL: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
-  {
-    imageURL:
-      "https://image.isu.pub/150210012900-10151cf6131f67d8bf0c77df2803a909/jpg/page_1_thumb_large.jpg",
-    id: 4,
-    title: 'dkafdkaf afdafdfa',
-    originalPrice: "12 004 tg",
-    currentPrice: '10 003 tg',
-  }
-]
+
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -72,8 +38,43 @@ export default class HomeScreen extends React.Component {
 
   state = {
     isLoading: true,
-    trackers: []
-  };
+    trackers: [],
+    stores : [
+      {
+        imageURL:
+          "https://i.pinimg.com/originals/4b/3e/cc/4b3ecc09e3b4fb647b0e8ff66b6312dd.jpg",
+        id: 41,
+        title: 'dkafdkaf afdafdfa kxjnckjdxc sdkfjsdkj',
+        originalPrice: "12 000 tg",
+        currentPrice: '10 000 tg',
+      },
+      {
+        imageURL:
+          "https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/092016/untitled-1_17.jpg?itok=PMxwI3X0",
+        id: 26,
+        title: 'dkafdkaf afdafdfa',
+        originalPrice: "12 000 tg",
+        currentPrice: '10 006 tg',
+      },
+      { imageURL: "https://image.ibb.co/i4eHtH/ww.png", id: 1, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
+      {
+        imageURL:
+          "https://yt3.ggpht.com/a-/ACSszfFZuuqkGPSjOiHwDrLNvM53iJm5TK54CrA7gg=s900-mo-c-c0xffffffff-rj-k-no",
+        id: 7,
+        title: 'dkafdkaf afdafdfa',
+        currentPrice: '10 002 tg',
+      },
+      { imageURL: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
+      {
+        imageURL:
+          "https://image.isu.pub/150210012900-10151cf6131f67d8bf0c77df2803a909/jpg/page_1_thumb_large.jpg",
+        id: 4,
+        title: 'dkafdkaf afdafdfa',
+        originalPrice: "12 004 tg",
+        currentPrice: '10 003 tg',
+      }
+    ],
+  }
 
 
   alertForNotification = () => {
@@ -105,16 +106,18 @@ export default class HomeScreen extends React.Component {
   }
 
   deleteGood2 = async (id) => {
+    console.log('i am here to delete', id)
     const USERID = await AsyncStorage.getItem("userID");
-    let newGoods = stores.filter(other => {
+    let newGoods = this.state.stores.filter(other => {
       return other.id != id;
     });
     console.log("deletedID:", id);
     console.log("newGoods", newGoods);
 
-    db.ref(`TRACKERS/${USERID}/${id}`).set(null);
+    //db.ref(`TRACKERS/${USERID}/${id}`).set(null);
 
     this.setState({ stores: newGoods });
+   
 
 
   };
@@ -183,16 +186,17 @@ export default class HomeScreen extends React.Component {
     }
   };
 
-  alert = item => {
+  _alert = item => {
     Alert.alert("", "Удалить товар?", [
-      { text: "Нет", onPress: () => console.log("отмена") },
+      { text: "Нет", onPress: () => {return false}},
       {
         text: "Да",
         onPress: () => {
-          console.log('deleting', item)
-          this.deleteGood(item.id) &&
-            this.props.navigation.goBack() &&
-            console.log("successfull");
+          // console.log('deleting', item)
+          // this.deleteGood(item.id) &&
+          //   this.props.navigation.goBack() &&
+          //   console.log("successfull");
+          return true;
         }
       }
     ]);
@@ -216,6 +220,7 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
+    console.log('check', this.props.navigation)
 
     if (this.state.isLoading) {
       return <ActivityIndicator size="large" color="#0000ff" />;
@@ -238,13 +243,16 @@ export default class HomeScreen extends React.Component {
               contentContainerStyle={{ margin: 4 }}
               horizontal={false}
               numColumns={2}
-              data={stores}
+              data={this.state.stores}
+              extraData = {this.state.stores}
+              
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity onPress={() => this.props.navigation.navigate("Good", {
-                    id:item.id,
                     good: item,
-                    delete: (id) => this.deleteGood2(id)
+                    delete: this.deleteGood2.bind(this),
+                    alert: this._alert.bind(this)
+                    
                   })}>
                     <View style={styles.oddView}>
                       <Image
@@ -259,7 +267,7 @@ export default class HomeScreen extends React.Component {
                       <Text style={{ paddingBottom: 50 }}>Цена: {item.currentPrice} тенге</Text>
                       <TouchableOpacity
                         style={styles.buttonDelete}
-                        onPress={() => this.alert(item)}
+                        onPress={() => this._alert(item)}
                       >
                         <Text>Удалить</Text>
                       </TouchableOpacity>
@@ -293,20 +301,15 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 50,
-    // position: "absolute",
-    // bottom: 16,
-    // right: 16,
+    
   },
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#FFF',
   },
   oddView: {
-    //backgroundColor: "pink",
-    width: width / 2,
-    borderColor: "green",
-    //borderBottomColor: "green",
-    borderWidth: 2
-  },
+     width: width / 2,
+   },
 
   addBtn: {
 

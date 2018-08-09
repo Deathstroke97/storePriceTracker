@@ -56,7 +56,7 @@ export default class AddNewOddScreen extends React.Component {
         text: "Ok",
         onPress: () => {
 
-          //this.props.navigation.goBack() &&
+          //threis.props.navigation.goBack() &&
           console.log("successfull");
         }
       }
