@@ -12,7 +12,7 @@ export default class StoresScreen extends React.Component {
   static navigationOptions = {
     title: "Онлайн магазины",
     headerStyle: {
-      backgroundColor: "#f4511e"
+      backgroundColor: "#DBC5BF",
     },
     headerTintColor: "#fff",
     headerTitleStyle: {
@@ -52,7 +52,7 @@ export default class StoresScreen extends React.Component {
                 });
               }}
             >
-              <Image source={{ uri: item.logoURL }} style={{ width: 150, height: 150, margin: 10 }} />
+              <Image source={{ uri: item.logoURL }} style={{ width: 150, height: 150, margin: 10, resizeMode: 'contain' }} />
             </TouchableOpacity>
           );
         }}

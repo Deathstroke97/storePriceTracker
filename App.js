@@ -11,7 +11,7 @@ import GoodScreen from "./components/GoodScreen";
 
 export default class App extends React.Component {
   render() {
-    return <Text> Test </Text>;
+    return <RootStack />;
   }
 }
 

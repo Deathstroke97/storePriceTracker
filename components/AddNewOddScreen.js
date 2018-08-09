@@ -26,7 +26,7 @@ export default class AddNewOddScreen extends React.Component {
   static navigationOptions = {
     title: "Добавление товара",
     headerStyle: {
-      backgroundColor: "#f4511e"
+      backgroundColor: "#DBC5BF",
     },
     headerTintColor: "#fff",
     headerTitleStyle: {
@@ -51,12 +51,9 @@ export default class AddNewOddScreen extends React.Component {
 
   alertForEmptyLink = () => {
     Alert.alert("", "Вы не ввели ссылку", [
-      // { text: "Нет", onPress: () => console.log("отмена") },
       {
         text: "Ok",
         onPress: () => {
-
-          //threis.props.navigation.goBack() &&
           console.log("successfull");
         }
       }
@@ -64,6 +61,7 @@ export default class AddNewOddScreen extends React.Component {
   }
 
   checkGood = async () => {
+    console.log('it is touched')
     if (this.state.link == "") {
       this.alertForEmptyLink()
     }
@@ -86,11 +84,9 @@ export default class AddNewOddScreen extends React.Component {
         formBody.push(encodedKey + "=" + encodedValue);
       }
       formBody = formBody.join("&");
+      console.log(formBody, '1')
 
       fetch('https://store-price-tracker.herokuapp.com/api/parser', {
-
-        //'https://store-price-tracker.herokuapp.com/api/parser'
-
         method: "POST",
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -101,7 +97,7 @@ export default class AddNewOddScreen extends React.Component {
 
         .then((resJson) => {
           console.log("resJson", resJson)
-          //console.log(resJson.data.currentPrice, resJson.data.imageURL, resJson.data.title)
+
 
 
           let newGood = {
@@ -113,7 +109,7 @@ export default class AddNewOddScreen extends React.Component {
             good: newGood,
           }))
 
-        }).catch(error => console.log('error while sending good to server'))
+        }).catch(error => console.log('error while sending good to server', error))
       this.setModalVisible(true);
 
     }
@@ -183,11 +179,11 @@ export default class AddNewOddScreen extends React.Component {
           <View style={styles.modal}>
             <View style={styles.modalInner}>
               <View style={{ flex: 1 }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, width: width / 2 }}>
                   <Image
                     source={{ uri: this.state.good.imgURL }}
                     style={{ flex: 1 }}
-                    resizeMode="cover"
+
                   />
                 </View>
                 <View style={{ flex: 1 }}>
@@ -195,7 +191,7 @@ export default class AddNewOddScreen extends React.Component {
                     Это ваш товар ?
                   </Text>
                   <TouchableHighlight
-                    style={styles.modalButton}
+                    style={styles.modalButtonTrue}
                     onPress={() => {
                       this.handleTrue();
                     }}
@@ -204,7 +200,7 @@ export default class AddNewOddScreen extends React.Component {
                   </TouchableHighlight>
 
                   <TouchableHighlight
-                    style={styles.modalButton}
+                    style={styles.modalButtonFalse}
                     onPress={() => {
                       this.handleFalse();
                     }}
@@ -260,6 +256,7 @@ const styles = StyleSheet.create({
   },
 
   logoIn: {
+    marginTop: 20,
     flex: 2,
     alignItems: "center",
     justifyContent: "center"
@@ -285,7 +282,8 @@ const styles = StyleSheet.create({
 
   image: {
     width: 200,
-    height: 100
+    height: 100,
+    resizeMode: 'contain',
   },
 
   inputContainerStyle: {
@@ -303,17 +301,23 @@ const styles = StyleSheet.create({
 
   button: {
     alignItems: "center",
-    backgroundColor: "#DDDDDD",
+    backgroundColor: "#DBC5BF",
     padding: 10
   },
-  modalButton: {
+  modalButtonTrue: {
     alignItems: "center",
-    backgroundColor: "#DDDDDD",
+    backgroundColor: "#56D17F",
+    padding: 10,
+    marginTop: 10
+  },
+  modalButtonFalse: {
+    alignItems: "center",
+    backgroundColor: "#D15660",
     padding: 10,
     marginTop: 10
   },
   modal: {
-    marginTop: 22,
+    //marginTop: 22,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     width: width,
     height: height,

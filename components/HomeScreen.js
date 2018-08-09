@@ -17,7 +17,7 @@ import {
   Paragraph
 } from 'react-native-paper';
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 const db = firebase.database();
 const notifs = firebase.notifications();
 
@@ -28,7 +28,7 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: "Мои товары",
     headerStyle: {
-      backgroundColor: "#f4511e"
+      backgroundColor: "#DBC5BF"//"#f4511e"
     },
     headerTintColor: "#fff",
     headerTitleStyle: {
@@ -39,41 +39,42 @@ export default class HomeScreen extends React.Component {
   state = {
     isLoading: true,
     trackers: [],
-    stores : [
+    stores: [
       {
         imageURL:
           "https://i.pinimg.com/originals/4b/3e/cc/4b3ecc09e3b4fb647b0e8ff66b6312dd.jpg",
         id: 41,
-        title: 'dkafdkaf afdafdfa kxjnckjdxc sdkfjsdkj',
-        originalPrice: "12 000 tg",
-        currentPrice: '10 000 tg',
+        title: 'Кроссовки от Adidas Originals 2016 ',
+        originalPrice: "12 000",
+        currentPrice: '10 000',
       },
       {
         imageURL:
           "https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/092016/untitled-1_17.jpg?itok=PMxwI3X0",
         id: 26,
-        title: 'dkafdkaf afdafdfa',
-        originalPrice: "12 000 tg",
-        currentPrice: '10 006 tg',
+        title: 'Кроссовки от Adidas Originals 2016 ',
+        originalPrice: "12 000",
+        currentPrice: '10 250',
       },
-      { imageURL: "https://image.ibb.co/i4eHtH/ww.png", id: 1, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
+      { imageURL: "https://image.ibb.co/i4eHtH/ww.png", id: 1, title: 'Кроссовки от Adidas Originals 2016 ', currentPrice: '10 000', },
       {
         imageURL:
           "https://yt3.ggpht.com/a-/ACSszfFZuuqkGPSjOiHwDrLNvM53iJm5TK54CrA7gg=s900-mo-c-c0xffffffff-rj-k-no",
         id: 7,
-        title: 'dkafdkaf afdafdfa',
-        currentPrice: '10 002 tg',
+        title: 'Кроссовки от Adidas Originals 2016 ',
+        currentPrice: '24500',
       },
-      { imageURL: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6, title: 'dkafdkaf afdafdfa', currentPrice: '10 000 tg', },
+      { imageURL: "https://colibri.org.kz/storage/boutiques/tekhnodom/logo.png", id: 6, title: 'dkafdkaf afdafdfa', currentPrice: '9800', },
       {
         imageURL:
           "https://image.isu.pub/150210012900-10151cf6131f67d8bf0c77df2803a909/jpg/page_1_thumb_large.jpg",
         id: 4,
-        title: 'dkafdkaf afdafdfa',
-        originalPrice: "12 004 tg",
-        currentPrice: '10 003 tg',
+
+        originalPrice: "12 250",
+        currentPrice: '11 000 ',
       }
     ],
+    confirmForDelete: false,
   }
 
 
@@ -90,36 +91,14 @@ export default class HomeScreen extends React.Component {
     ]);
   };
 
+
   deleteGood = async (id) => {
     const USERID = await AsyncStorage.getItem("userID");
-    let newGoods = this.state.trackers.filter(other => {
+    const newGoods = this.state.stores.filter(other => {
       return other.id != id;
     });
-    console.log("deletedID:", id);
-    console.log("newGoods", newGoods);
-
     db.ref(`TRACKERS/${USERID}/${id}`).set(null);
-
-    this.setState({ trackers: newGoods });
-
-
-  }
-
-  deleteGood2 = async (id) => {
-    console.log('i am here to delete', id)
-    const USERID = await AsyncStorage.getItem("userID");
-    let newGoods = this.state.stores.filter(other => {
-      return other.id != id;
-    });
-    console.log("deletedID:", id);
-    console.log("newGoods", newGoods);
-
-    //db.ref(`TRACKERS/${USERID}/${id}`).set(null);
-
     this.setState({ stores: newGoods });
-   
-
-
   };
 
 
@@ -186,21 +165,7 @@ export default class HomeScreen extends React.Component {
     }
   };
 
-  _alert = item => {
-    Alert.alert("", "Удалить товар?", [
-      { text: "Нет", onPress: () => {return false}},
-      {
-        text: "Да",
-        onPress: () => {
-          // console.log('deleting', item)
-          // this.deleteGood(item.id) &&
-          //   this.props.navigation.goBack() &&
-          //   console.log("successfull");
-          return true;
-        }
-      }
-    ]);
-  }
+
 
   beginListeningForMessages() {
     console.log('begin listening for notifications')
@@ -219,6 +184,39 @@ export default class HomeScreen extends React.Component {
     this.state.trackersRef()
   }
 
+  renderPrices = (good) => {
+    if (good.originalPrice == undefined) {
+      return (
+        <View style={{ width: width / 2, padding: 10 }}>
+          <Text>
+            Товар:  <Text style={{ fontFamily: 'serif', fontWeight: 'bold' }}>
+              {good.title}
+            </Text>
+          </Text>
+          <Text style={{ paddingBottom: 50, fontWeight: 'bold' }}>Цена: {good.currentPrice} тенге</Text>
+        </View>
+      )
+    }
+    else {
+      return (
+        <View>
+          <View style={{ width: width / 2, padding: 10 }}>
+            <Text>
+              Товар:  <Text style={{ fontFamily: 'serif', fontWeight: 'bold' }}>
+                {good.title}
+              </Text>
+            </Text>
+            <Text style={{ fontWeight: 'bold' }}>Цена: </Text><Text style={styles.originalPrice}>{good.originalPrice} тенге</Text>
+            <Text style={{ fontWeight: 'bold' }}>Цена со скидкой: </Text><Text style={styles.currentPrice}>{good.currentPrice} тенге</Text>
+          </View>
+
+
+
+        </View>
+      )
+    }
+  }
+
   render() {
     console.log('check', this.props.navigation)
 
@@ -230,7 +228,7 @@ export default class HomeScreen extends React.Component {
 
       <View style={styles.container}>
 
-        {this.state.trackers.length !== 0 ? (
+        {this.state.trackers.length == 0 ? (
           <View style={{ flex: 1 }}>
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
               <Text>Добавьте товар в список</Text>
@@ -240,37 +238,27 @@ export default class HomeScreen extends React.Component {
         ) : (
 
             <FlatList
-              contentContainerStyle={{ margin: 4 }}
+              contentContainerStyle={{ margin: 5 }}
               horizontal={false}
               numColumns={2}
               data={this.state.stores}
-              extraData = {this.state.stores}
-              
+              extraData={this.state.stores}
+
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity onPress={() => this.props.navigation.navigate("Good", {
                     good: item,
-                    delete: this.deleteGood2.bind(this),
-                    alert: this._alert.bind(this)
-                    
+                    delete: this.deleteGood.bind(this),
+
+
                   })}>
                     <View style={styles.oddView}>
                       <Image
-                        style={{ width: width / 2, height: 200, margin: 4 }}
+                        style={{ width: width / 2, height: height / 5, margin: 4, resizeMode: 'contain' }}
                         source={{ uri: item.imageURL }}
                       />
-                      <Text>
-                        Товар:<Text style={{ fontWeight: "bold" }}>
-                          {item.title}
-                        </Text>
-                      </Text>
-                      <Text style={{ paddingBottom: 50 }}>Цена: {item.currentPrice} тенге</Text>
-                      <TouchableOpacity
-                        style={styles.buttonDelete}
-                        onPress={() => this._alert(item)}
-                      >
-                        <Text>Удалить</Text>
-                      </TouchableOpacity>
+                      {this.renderPrices(item)}
+
                     </View>
                   </TouchableOpacity>
                 );
@@ -279,7 +267,7 @@ export default class HomeScreen extends React.Component {
             />
           )}
         <TouchableOpacity style={styles.touch} onPress={() => this.props.navigation.navigate('Stores')}>
-          <Image style={styles.myAddBtn} source={require('./img/myplus.png')} />
+          <Image style={styles.myAddBtn} source={require('./img/lastPlus.png')} />
         </TouchableOpacity>
 
       </View>
@@ -298,26 +286,25 @@ const styles = StyleSheet.create({
   },
   myAddBtn: {
     backgroundColor: "white",
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     borderRadius: 50,
-    
+
   },
   container: {
     flex: 1,
     backgroundColor: '#FFF',
   },
   oddView: {
-     width: width / 2,
-   },
+    width: width / 2,
+  },
 
   addBtn: {
-
     position: "absolute",
     bottom: 16,
     right: 16,
-    width: 60,
-    height: 60,
+    width: 40,
+    height: 40,
     borderRadius: 60,
     justifyContent: "center",
     elevation: 8
@@ -334,10 +321,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 10,
     bottom: 10,
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     fontSize: 20,
     height: 22,
     color: "white"
-  }
+  },
+  originalPrice: {
+    textDecorationLine: 'line-through',
+  },
+  currentPrice: {
+    color: 'green',
+    fontWeight: 'bold'
+  },
 });
