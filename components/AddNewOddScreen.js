@@ -98,8 +98,6 @@ export default class AddNewOddScreen extends React.Component {
         .then((resJson) => {
           console.log("resJson", resJson)
 
-
-
           let newGood = {
             curPrice: resJson.data.currentPrice,
             imgURL: resJson.data.imageURL,
@@ -179,12 +177,13 @@ export default class AddNewOddScreen extends React.Component {
           <View style={styles.modal}>
             <View style={styles.modalInner}>
               <View style={{ flex: 1 }}>
-                <View style={{ flex: 1, width: width / 2 }}>
-                  <Image
-                    source={{ uri: this.state.good.imgURL }}
-                    style={{ flex: 1 }}
-
-                  />
+                <View style={{ flex: 1, width: width / 1.5, height: 5000 }}>
+                  {(this.state.good.imgURL !== "") &&
+                    (<Image
+                      source={{ uri: this.state.good.imgURL }}
+                      style={{ flex: 1, resizeMode: 'contain' }}
+                    />)
+                  }
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ textAlign: "center", marginTop: 10 }}>
@@ -308,13 +307,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#56D17F",
     padding: 10,
-    marginTop: 10
+    marginTop: 25,
+    borderRadius: 10
   },
   modalButtonFalse: {
     alignItems: "center",
     backgroundColor: "#D15660",
     padding: 10,
-    marginTop: 10
+    marginTop: 10,
+    borderRadius: 10
   },
   modal: {
     //marginTop: 22,

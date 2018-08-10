@@ -10,7 +10,7 @@ import {
 
 export default class StoresScreen extends React.Component {
   static navigationOptions = {
-    title: "Онлайн магазины",
+    title: "Интернет магазины",
     headerStyle: {
       backgroundColor: "#DBC5BF",
     },

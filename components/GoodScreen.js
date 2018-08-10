@@ -55,11 +55,7 @@ export default class GoodScreen extends React.Component {
         }
       ]);
     }
-
     _alert();
-
-
-
   }
 
   renderPrices = (good) => {
@@ -94,10 +90,11 @@ export default class GoodScreen extends React.Component {
           <Image source={{ uri: item.imageURL }} style={{ width: 165, height: 200, margin: 4, resizeMode: 'contain' }} ></Image>
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 15, fontSize: 18 }}>{item.title}</Text>
+          <Text style={{ fontWeight: 'bold', justifyContent: "center", alignItems: "center", fontSize: 15, marginBottom: 15, fontSize: 18, marginTop: 15 }}>{item.title}</Text>
           {this.renderPrices(item)}
+          {/* {this.renderStore(item)} */}
         </View>
-        <View style={{ flex: 1, paddingTop: 80 }}>
+        <View style={{ flex: 1, paddingTop: 80, justifyContent: "center", alignItems: "center" }}>
           <TouchableOpacity
             onPress={() => {
               this.handlePress(item)
@@ -108,7 +105,7 @@ export default class GoodScreen extends React.Component {
           </TouchableOpacity>
 
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <TouchableOpacity
             onPress={() => {
               this.openExternalLink(item.link)
