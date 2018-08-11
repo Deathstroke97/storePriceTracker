@@ -11,6 +11,11 @@ import {
 } from "react-native";
 
 // const { params} = this.props.navigation.state;
+
+const drawBorder = (borderColor = 'black', borderWidth = 2) => ({
+  // borderColor,
+  // borderWidth
+})
 export default class GoodScreen extends React.Component {
 
   static navigationOptions = {
@@ -62,7 +67,7 @@ export default class GoodScreen extends React.Component {
     if (good.originalPrice == undefined) {
       return (
         <View style={{ flexDirection: 'row' }}>
-          <Text>Цена: </Text><Text style={{}}>{good.currentPrice} тенге</Text>
+          <Text>Цена: </Text><Text style={styles.originalPrice}>{good.currentPrice} тенге</Text>
         </View>
       )
     }
@@ -85,16 +90,16 @@ export default class GoodScreen extends React.Component {
 
 
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <View style={{ flex: 3, marginTop: 20 }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
           <Image source={{ uri: item.imageURL }} style={{ width: 165, height: 200, margin: 4, resizeMode: 'contain' }} ></Image>
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={styles.title}>
           <Text style={{ fontWeight: 'bold', justifyContent: "center", alignItems: "center", fontSize: 15, marginBottom: 15, fontSize: 18, marginTop: 15 }}>{item.title}</Text>
           {this.renderPrices(item)}
-          {/* {this.renderStore(item)} */}
+
         </View>
-        <View style={{ flex: 1, paddingTop: 80, justifyContent: "center", alignItems: "center" }}>
+        <View style={{ flex: 1, paddingTop: 100, justifyContent: "center", alignItems: "center" }}>
           <TouchableOpacity
             onPress={() => {
               this.handlePress(item)
@@ -105,7 +110,7 @@ export default class GoodScreen extends React.Component {
           </TouchableOpacity>
 
         </View>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: 20 }}>
           <TouchableOpacity
             onPress={() => {
               this.openExternalLink(item.link)
@@ -124,22 +129,29 @@ export default class GoodScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    flex: 1, justifyContent: "center", alignItems: "center",
+    ...drawBorder('red')
   },
   originalPrice: {
     textDecorationLine: 'line-through',
-    fontSize: 15
+    color: "#D15660",
+    fontWeight: 'bold'
   },
   currentPrice: {
     color: 'green',
-    fontSize: 15,
     fontWeight: 'bold'
-
   },
-
+  header: {
+    flex: 3, marginTop: 20,
+    ...drawBorder('green')
+  },
+  title: {
+    // flex: 1,
+    paddingTop: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...drawBorder()
+  },
   button: {
     alignItems: "center",
     backgroundColor: "#D15660",
